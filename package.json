@@ -1,7 +1,7 @@
 {
-  "name": "gestion-hoteles-nd",
+  "name": "gestion-hoteles.nd",
   "version": "1.0.0",
-  "description": "backend de gestión hoteles",
+  "description": "backend de gestion de hoteles",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
