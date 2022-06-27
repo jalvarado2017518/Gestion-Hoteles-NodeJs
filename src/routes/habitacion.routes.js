@@ -9,4 +9,5 @@ api.post('/agregarHabitacion', md_autenticacion.Auth, habitacionController.agreg
 api.put('/editarHabitacion/:idHabitacion', md_autenticacion.Auth,habitacionController.editarHabitacion);
 api.delete('/eliminarHabitacion/:idHabitacion', md_autenticacion.Auth, habitacionController.eliminarHabitacion);
 api.get('/buscarHabitaciones', md_autenticacion.Auth, habitacionController.buscarHabitaciones);
+api.post('/buscarHotelDisponible', habitacionController.habitacionDisponible);
 module.exports = api;
