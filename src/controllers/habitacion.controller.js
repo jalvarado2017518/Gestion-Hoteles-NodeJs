@@ -63,9 +63,30 @@ function buscarHabitaciones(req, res) {
     })
 }
 
+function habitacionDisponible(req, res) {
+    let cont = 0;
+    let parametros = req.body;
+    if (parametros.nombre) {
+        Hotel.findOne({ nombre: parametros.nombre }, (err, hotelEncontrado) => {
+            if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
+            if (underscore.isEmpty(hotelEncontrado)) return res.status(404).send({ mensaje: 'Error al obtener el hotel' });
+
+            Habitacion.find({ idHotel: hotelEncontrado._id, disponible: true }, (err, habitacioDisponible) => {
+                if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
+                if (!habitacioDisponible) return res.status(404).send({ mensaje: 'Error al obtener el hotel' });
+                habitacioDisponible.forEach(habitaciones => { habitaciones.nombre, cont++; })
+                return res.status(200).send({ habitacion: cont })
+            })
+        })
+    } else {
+        return res.status(404).send({ mensaje: 'Ingresa todos los datos, Por favor' })
+    }
+}
+
 module.exports = {
     agregarHabitacion,
     editarHabitacion,
     eliminarHabitacion,
-    buscarHabitaciones
+    buscarHabitaciones,
+    habitacionDisponible
 }

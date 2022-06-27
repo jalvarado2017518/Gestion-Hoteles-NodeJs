@@ -67,7 +67,7 @@ function buscarServicios(req, res) {
     })
 }
 
-function obtenerServicioPorNombre(req, res){
+function buscarServicioNombre(req, res){
     var nombreService = req.params.nombreServicio;
 
     Servicio.findOne( { nombre : { $regex: nombreService, $options: 'i' }}, (err, servicioEncontrado) => {
@@ -83,5 +83,5 @@ module.exports={
     editarServicio,
     eliminarServicio,
     buscarServicios,
-    obtenerServicioPorNombre
+    buscarServicioNombre
 }
