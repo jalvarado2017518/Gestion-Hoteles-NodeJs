@@ -36,9 +36,9 @@ function agregarReservacion(req, res) {
 
     if (req.user.role == 'Admin') return res.status(500).send({message: 'No tienes permiso para realizar esta acción'});
 
-    if(parametros.idHotel && parametros.idHabitacion && parametros.fechaInicio && parametros.fechaFinal){
+    if(parametros.idHotel && parametros.numeroDeHabitacion && parametros.fechaInicio && parametros.fechaFinal){
         reservacionModel.idHotel = parametros.idHotel;
-        reservacionModel.idHabitacion = parametros.idHabitacion;
+        reservacionModel.numeroDeHabitacion = parametros.numeroDeHabitacion;
         reservacionModel.idUsuario = req.user.sub;
         reservacionModel.fechaInicio = parametros.fechaInicio;
         reservacionModel.fechaFinal = parametros.fechaFinal;
