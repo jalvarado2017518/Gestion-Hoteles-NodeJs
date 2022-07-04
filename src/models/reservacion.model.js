@@ -5,7 +5,7 @@ var Schema=mongoose.Schema;
 var reservacionesSchema = Schema({
     idHotel: { type: Schema.Types.ObjectId, ref: 'Hoteles'},
     idUsuario: { type: Schema.Types.ObjectId, ref: 'Usuarios'},
-    idHabitacion: { type: Schema.Types.ObjectId, ref: 'Habitacion'},
+    numeroDeHabitacion: { type: Schema.Types.Object, ref: 'Habitacion'},
     fechaInicio:String,
     fechaFinal:String,
 
