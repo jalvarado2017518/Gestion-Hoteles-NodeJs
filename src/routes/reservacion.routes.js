@@ -9,7 +9,7 @@ app.get("/reservaciones-usuario", md_autentificacion.Auth,reservacionesControlle
 app.post('/crear-reservacion', md_autentificacion.Auth, reservacionesController.agregarReservacion);
 app.put('/editar-reservacion/:idReservacion', md_autentificacion.Auth, reservacionesController.editarReservacion)
 app.delete('/eliminar-reservacion/:idReservacion', md_autentificacion.Auth, reservacionesController.eliminarReservacion);
-
+app.post('/generarFactura', md_autentificacion.Auth,reservacionesController.generarFactura);
 
  
 module.exports = app;
