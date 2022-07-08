@@ -1,5 +1,8 @@
 const Reservaciones = require('../models/reservacion.model');
 const Hoteles = require('../models/hotel.model');
+const Factura = require('../models/factura.model');
+const Servicio = require('../models/servicio.model')
+const underscore = require('underscore');
 
 function obtenerReservacionHotel(req, res) {
     var idHotel = req.params.idHotel;
@@ -39,6 +42,7 @@ function agregarReservacion(req, res) {
     if(parametros.idHotel && parametros.numeroDeHabitacion && parametros.fechaInicio && parametros.fechaFinal){
         reservacionModel.idHotel = parametros.idHotel;
         reservacionModel.numeroDeHabitacion = parametros.numeroDeHabitacion;
+        //reservacionModel.idHabitacion = parametros.idHabitacion; y lo cambias en el if
         reservacionModel.idUsuario = req.user.sub;
         reservacionModel.fechaInicio = parametros.fechaInicio;
         reservacionModel.fechaFinal = parametros.fechaFinal;
@@ -79,10 +83,45 @@ function eliminarReservacion(req, res){
 
 }
 
+
+function generarFactura(req, res){
+    var parametros = req.body;
+    var facturaModel = new Factura();
+    
+    if(parametros.nit, parametros.estado, parametros.fecha){
+        Factura.findOne({nit: parametros.nit }, (err, facturaEncontrada) => {
+            if(err) return res.status(500).send({mensaje: "error en la peticion"})
+            if(underscore.isEmpty(facturaEncontrada)) {
+                
+                Servicio.findOne({ idAdmin: req.user.sub, nombre: { $regex: parametros.servicio, $options:'i' }}, (err, servicioEncontrado) =>{
+                    if (err) return res.status(500).send({mensaje: "error en la peticion" + err})
+                    if(!underscore.isEmpty(servicioEncontrado)){
+                        facturaModel.nit = parametros.nit;
+                        facturaModel.estado = parametros.estado;
+                        facturaModel.fecha = parametros.fecha;
+                        facturaModel.idAdmin = req.user.sub;
+                        facturaModel.idServicios = servicioEncontrado._id;
+                        facturaModel.save((err, facturaGuardada) => {
+                            if (err) return res.status(404).send({ mensaje: 'Error en la peticion' })
+                            return res.status(200).send({ mensaje: facturaGuardada }) 
+                        })
+                    }
+                })     
+            } else {
+                return res.status(500).send({ mensaje: "el servicio ya existe" })
+            }                      
+        })
+    }else {
+        return res.status(500).send({ mensaje: "Por favor, llene todos los campos" })
+    }
+}
+
+
 module.exports = {
     obtenerReservacionHotel,
     obtenerReservacionesUsuario,
     agregarReservacion,
     editarReservacion,
-    eliminarReservacion
+    eliminarReservacion,
+    generarFactura
 }
