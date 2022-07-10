@@ -1,4 +1,4 @@
-const Hotel = require('../models/hotel.model')
+const Hotel = require('../models/hoteles.model')
 const evento = require('../models/eventos.model')
 const underscore = require('underscore');
 
@@ -9,17 +9,15 @@ function agregarEvento(req, res) {
         evento.findOne({ nombreEvento: parametros.nombreEvento }, (err, eventoAgregado) => {
             if (err) return res.status(404).send({ mensaje: 'Error en la peticion' });
             if (underscore.isEmpty(eventoAgregado)) {
-                Hotel.findOne({ nombre: parametros.nombreHotel }, (err, hotelEncontrado) => {
                     eventoModel.nombreEvento = parametros.nombreEvento;
                     eventoModel.descripcion = parametros.descripcion;
                     eventoModel.precio = parametros.precio;
                     eventoModel.idAdmin = req.user.sub;
-                    eventoModel.idHotel = hotelEncontrado._id;
+                    eventoModel.idHotel = parametros.idHotel;
                     eventoModel.save((err, eventoGuardado) => {
                         if (err) return res.status(404).send({ mensaje: 'Error en la peticion' })
                         return res.status(200).send({ mensaje: eventoGuardado })
                     })
-                })
             } else {
                 return res.status(200).send({ mensaje: 'Ese nombre ya esta utilizado, intente con otro' })
             }
@@ -51,12 +49,53 @@ function eliminarEvento(req, res) {
 
 }
 
-function buscarEvento(req, res) {
+/*function obtenerEventos(req, res) {
     evento.find((err, eventoEncontrado) => {
         if (err) return res.send({ mensaje: "Error: " + err })
         for (let i = 0; i < eventoEncontrado.length; i++) {
         }
-        return res.status(200).send({ Evento: eventoEncontrado })
+        return res.status(200).send({ eventos: eventoEncontrado })
+    })
+}*/
+
+function obtenerEventos (req, res) {
+    if (req.user.rol == "SuperAdmin" || req.user.rol == "Cliente") {
+        evento.find((err, eventoEncontrado) => {
+            if (err) return res.send({ mensaje: "Error: " + err })
+            for (let i = 0; i < eventoEncontrado.length; i++) {
+            }
+            return res.status(200).send({ eventos: eventoEncontrado })
+        })
+    }else{
+        evento.find({idAdmin: req.user.sub},(err, eventoEncontrado) => {
+            if (err) return res.send({ mensaje: "Error: " + err })
+    
+            return res.send({ eventos: eventoEncontrado })
+    
+        })
+    }
+}
+
+function ObtenerEventosId(req, res) {
+    var idEvent = req.params.idEvento;
+
+    evento.findById(idEvent, (err, eventoEncontrado) => {
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
+        if (!eventoEncontrado) return res.status(500).send( { mensaje: 'Error al obtener los datos' });
+
+        return res.status(200).send({ evento: eventoEncontrado });
+    })
+}
+
+function ObtenerEventosHoteles(req, res) {
+    var idHote = req.params.idHotel;
+
+    evento.find({idHotel:idHote}, (err, eventosEncontrados) => {
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
+        if (!eventosEncontrados) return res.status(404).send( { mensaje: 'Error al obtener los datos' });
+   
+       
+        return res.status(200).send({ eventos: eventosEncontrados });
     })
 }
 
@@ -64,5 +103,7 @@ module.exports = {
     agregarEvento,
     editarEvento,
     eliminarEvento,
-    buscarEvento,
+    obtenerEventos,
+    ObtenerEventosId,
+    ObtenerEventosHoteles
 }

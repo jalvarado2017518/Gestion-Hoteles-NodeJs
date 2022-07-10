@@ -5,7 +5,7 @@ const HabitacionSchema = Schema({
     numeroDeHabitacion:String, 
     descripcion: String,
     precio: Number,
-    disponible: Boolean, 
+    disponible: String, 
     idAdmin:{type: Schema.Types.ObjectId, ref: 'Usuarios' },
     idHotel:{type: Schema.Types.ObjectId, ref: 'Hotel' }
 })
