@@ -4,7 +4,7 @@ const jwt = require('../services/jwt')
 
 function Login(req, res) {
     var parametros = req.body;
-    Empresas.findOne({ email: parametros.email }, (err, empresaEncontrada) => {
+    Usuario.findOne({ email: parametros.email }, (err, empresaEncontrada) => {
         if (err) return res.status(500).send({ mensaje: "Error en la petición" });
         if (empresaEncontrada) {
             
