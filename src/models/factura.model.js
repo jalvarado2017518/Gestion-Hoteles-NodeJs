@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 
 var Schema=mongoose.Schema;
 
-var habitacionesSchema = Schema({
+var FacturaSchema = Schema({
     nit: String,
     estado:String,
     fecha: String,
     idAdmin: { type: Schema.Types.ObjectId, ref: 'Usuarios'},
-    idServicios : { type: Schema.Types.ObjectId, ref: 'Servicio'}
+    idReservacion : { type: Schema.Types.ObjectId, ref: 'Reservacion'}
 })
 
-module.exports=mongoose.model('habitaciones',habitacionesSchema)
+module.exports=mongoose.model('Factura',FacturaSchema)

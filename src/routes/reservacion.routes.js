@@ -1,15 +1,19 @@
 const express = require('express');
-const reservacionesController = require('../controllers/reservacion.controller');
+const reservacionesController = require('../controllers/reservaciones.controller');
 const md_autentificacion = require('../middlewares/autenticacion');
 
-var app = express.Router();
+var api = express.Router();
 
-app.get("/reservaciones-hotel/:idHotel", md_autentificacion.Auth,reservacionesController.obtenerReservacionHotel);
-app.get("/reservaciones-usuario", md_autentificacion.Auth,reservacionesController.obtenerReservacionesUsuario);
-app.post('/crear-reservacion', md_autentificacion.Auth, reservacionesController.agregarReservacion);
-app.put('/editar-reservacion/:idReservacion', md_autentificacion.Auth, reservacionesController.editarReservacion)
-app.delete('/eliminar-reservacion/:idReservacion', md_autentificacion.Auth, reservacionesController.eliminarReservacion);
-app.post('/generarFactura', md_autentificacion.Auth,reservacionesController.generarFactura);
+api.post('/agregarReservacion', md_autentificacion.Auth, reservacionesController.agregarReservacion);
+api.get("/reservaciones-hotel/:idHotel", md_autentificacion.Auth,reservacionesController.obtenerReservacionHotel);
+api.get("/reservaciones-usuario", md_autentificacion.Auth,reservacionesController.obtenerReservacionesUsuario);
+api.put('/editarReservacion/:idReservacion', reservacionesController.editarReservacion)
+api.delete('/eliminarReservacion/:idReservacion', reservacionesController.eliminarReservacion);
+api.get('/reservaciones/:idReservacion', reservacionesController.ObtenerReservacionesId);
+api.get('/reservaciones',md_autentificacion.Auth, reservacionesController.ObtenerReservaciones)
+api.post('/generarFactura', md_autentificacion.Auth,reservacionesController.generarFactura);
+api.get('/facturas',md_autentificacion.Auth, reservacionesController.ObtenerFacturas)
+
 
  
-module.exports = app;
+module.exports = api;

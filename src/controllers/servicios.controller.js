@@ -1,30 +1,27 @@
 const Servicio = require('../models/servicio.model');
-const Hotel = require('../models/hotel.model');
+const Hotel = require('../models/hoteles.model');
 const underscore = require('underscore');
 
 function agregarServicio(req, res) {
     var parametros = req.body;
     var servicioModel = new Servicio;
 
-    if (parametros.nombreServicio, parametros.precio, parametros.descripcion, parametros.hotel) {
+    if (parametros.nombreServicio, parametros.precio, parametros.descripcion) {
         Servicio.findOne({ nombreServicio: parametros.nombreServicio }, (err, servicioEncontrado) => {
             if (err) return res.status(500).send({ mensaje: "Error en la peticion" })
             if (underscore.isEmpty(servicioEncontrado)) {
 
-                Hotel.findOne({ idAdmin: req.user.sub, nombre: { $regex: parametros.hotel, $options:'i'} }, (err, hotelEncontrado) => {
                     if (err) return res.status(500).send({ mensaje: "Error en la peticion" + err})
-                    if (!underscore.isEmpty(hotelEncontrado)) {
                         servicioModel.nombreServicio = parametros.nombreServicio;
                         servicioModel.precio = parametros.precio;
                         servicioModel.descripcion = parametros.descripcion;
                         servicioModel.idAdmin=req.user.sub;
-                        servicioModel.idHotel=hotelEncontrado._id;
+                        servicioModel.idHotel=parametros.idHotel;
                         servicioModel.save((err, servicioGuardado) => {
                             if (err) return res.status(404).send({ mensaje: 'Error en la peticion' })
                             return res.status(200).send({ mensaje: servicioGuardado })
                         })
-                    }
-                })
+                    
             } else {
                 return res.status(500).send({ mensaje: "el servicio ya existe" })
             }
@@ -78,10 +75,63 @@ function buscarServicioNombre(req, res){
     })
 }
 
+/*function obtenerServicios(req, res) {
+    Servicio.find((err, serviciosEncontrados) => {
+        if (err) return res.send({ mensaje: "Error: " + err })
+        for (let i = 0; i < serviciosEncontrados.length; i++) {
+        }
+        return res.status(200).send({ servicios: serviciosEncontrados })
+    })
+}*/
+
+function obtenerServicios (req, res) {
+    if (req.user.rol == "SuperAdmin" || req.user.rol == "Cliente") {
+        Servicio.find((err, serviciosEncontrados) => {
+            if (err) return res.send({ mensaje: "Error: " + err })
+            for (let i = 0; i < serviciosEncontrados.length; i++) {
+            }
+            return res.status(200).send({ servicios: serviciosEncontrados })
+        })
+    }else{
+        Servicio.find({idAdmin: req.user.sub},(err, serviciosEncontrados) => {
+            if (err) return res.send({ mensaje: "Error: " + err })
+    
+            return res.send({ servicios: serviciosEncontrados })
+    
+        })
+    }
+}
+
+function ObtenerServiciosId(req, res) {
+    var idService = req.params.idServicio;
+
+    Servicio.findById(idService, (err, serviciosEncontrado) => {
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
+        if (!serviciosEncontrado) return res.status(500).send( { mensaje: 'Error al obtener los datos' });
+
+        return res.status(200).send({ servicio: serviciosEncontrado });
+    })
+}
+
+function ObtenerServiciosHoteles(req, res) {
+    var idHote = req.params.idHotel;
+
+    Servicio.find({idHotel:idHote}, (err, serviciosEncontrados) => {
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
+        if (!serviciosEncontrados) return res.status(404).send( { mensaje: 'Error al obtener los datos' });
+   
+       
+        return res.status(200).send({ servicios: serviciosEncontrados });
+    })
+}
+
 module.exports={
     agregarServicio,
     editarServicio,
     eliminarServicio,
     buscarServicios,
-    buscarServicioNombre
+    buscarServicioNombre,
+    ObtenerServiciosHoteles,
+    ObtenerServiciosId,
+    obtenerServicios
 }

@@ -7,9 +7,10 @@ var app = express();
 const UsuariosRutas = require('./src/routes/usuarios.routes');
 const EventosRutas = require('./src/routes/eventos.routes');
 const HabitacionRutas = require('./src/routes/habitacion.routes');
-const HotelRutas = require('./src/routes/hotel.routes');
+const HotelesRutas = require('./src/routes/hoteles.routes');
 const ServiciosRutas = require('./src/routes/servicios.routes');
 const ReservacionRutas = require('./src/routes/reservacion.routes');
+
 // MIDDLEWARES -> INTERMEDIARIOS
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -17,7 +18,7 @@ app.use(express.json());
 // CABECERAS
 app.use(cors());
 
-app.use('/api', UsuariosRutas, EventosRutas, HotelRutas, HabitacionRutas, ServiciosRutas, ReservacionRutas);
+app.use('/api', UsuariosRutas, EventosRutas, HotelesRutas,HabitacionRutas,ServiciosRutas,ReservacionRutas);
 
 
 module.exports = app;
